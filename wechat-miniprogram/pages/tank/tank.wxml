@@ -1,0 +1,110 @@
+<!--pages/tank/tank.wxml-->
+<view class="container tank-container">
+  <!-- 标题 -->
+  <view class="header">
+    <text class="page-title">社区鱼缸</text>
+  </view>
+
+  <!-- 过滤选项 -->
+  <view class="filter-bar">
+    <view 
+      class="filter-btn {{sortBy === 'recent' ? 'active' : ''}}"
+      data-sort="recent"
+      bindtap="changeSortBy"
+    >
+      最新
+    </view>
+    <view 
+      class="filter-btn {{sortBy === 'popular' ? 'active' : ''}}"
+      data-sort="popular"
+      bindtap="changeSortBy"
+    >
+      最热
+    </view>
+    <view 
+      class="filter-btn {{sortBy === 'random' ? 'active' : ''}}"
+      data-sort="random"
+      bindtap="changeSortBy"
+    >
+      随机
+    </view>
+  </view>
+
+  <!-- 鱼缸画布 -->
+  <view class="tank-wrapper">
+    <canvas 
+      class="tank-canvas" 
+      canvas-id="tankCanvas" 
+      disable-scroll="false"
+    ></canvas>
+    
+    <!-- 水波纹效果 -->
+    <view class="water-effect"></view>
+  </view>
+
+  <!-- 鱼列表（滚动显示） -->
+  <scroll-view 
+    class="fish-list" 
+    scroll-y="true"
+    bindscrolltolower="loadMoreFish"
+  >
+    <view class="fish-grid">
+      <view 
+        class="fish-item"
+        wx:for="{{fishList}}"
+        wx:key="id"
+        data-fish="{{item}}"
+        bindtap="viewFishDetail"
+      >
+        <image class="fish-image" src="{{item.imageUrl}}" mode="aspectFit" />
+        <view class="fish-info">
+          <text class="fish-artist">{{item.artist}}</text>
+          <text class="fish-votes">❤️ {{item.votes || 0}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:else>下拉加载更多</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && fishList.length > 0}}">
+      <text>没有更多鱼了</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{fishList.length === 0 && !loading}}">
+      <text>鱼缸里还没有鱼\n快去画一条吧！</text>
+    </view>
+  </scroll-view>
+
+  <!-- 鱼详情弹窗 -->
+  <view class="modal-mask" wx:if="{{showDetailModal}}" bindtap="closeDetailModal">
+    <view class="detail-dialog" catchtap="stopPropagation">
+      <view class="detail-header">
+        <image class="detail-fish-image" src="{{selectedFish.imageUrl}}" mode="aspectFit" />
+      </view>
+      <view class="detail-body">
+        <view class="detail-row">
+          <text class="detail-label">艺术家:</text>
+          <text class="detail-value">{{selectedFish.artist}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">获赞:</text>
+          <text class="detail-value">{{selectedFish.votes || 0}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">创建时间:</text>
+          <text class="detail-value">{{selectedFish.createTime}}</text>
+        </view>
+      </view>
+      <view class="detail-footer">
+        <button class="detail-btn btn-secondary" bindtap="closeDetailModal">关闭</button>
+        <button class="detail-btn btn-primary" bindtap="addToMyTank">加入我的鱼缸</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,115 @@
+<!--pages/rank/rank.wxml-->
+<view class="container rank-container">
+  <!-- 标题 -->
+  <view class="header">
+    <text class="page-title">鱼的排名</text>
+    <text class="page-subtitle">为你喜欢的鱼投票吧！</text>
+  </view>
+
+  <!-- 投票卡片 -->
+  <view class="voting-card" wx:if="{{currentFish}}">
+    <view class="card-content">
+      <!-- 鱼的图片 -->
+      <view class="fish-display">
+        <image class="fish-image" src="{{currentFish.imageUrl}}" mode="aspectFit" />
+      </view>
+
+      <!-- 鱼的信息 -->
+      <view class="fish-meta">
+        <view class="meta-row">
+          <text class="meta-label">艺术家:</text>
+          <text class="meta-value">{{currentFish.artist}}</text>
+        </view>
+        <view class="meta-row">
+          <text class="meta-label">获赞:</text>
+          <text class="meta-value">❤️ {{currentFish.votes || 0}}</text>
+        </view>
+      </view>
+
+      <!-- 投票按钮 -->
+      <view class="vote-buttons">
+        <button 
+          class="vote-btn dislike-btn" 
+          bindtap="voteFish"
+          data-vote="-1"
+          disabled="{{voting}}"
+        >
+          <text class="vote-icon">👎</text>
+          <text class="vote-text">不喜欢</text>
+        </button>
+        <button 
+          class="vote-btn like-btn" 
+          bindtap="voteFish"
+          data-vote="1"
+          disabled="{{voting}}"
+        >
+          <text class="vote-icon">👍</text>
+          <text class="vote-text">喜欢</text>
+        </button>
+      </view>
+
+      <!-- 跳过按钮 -->
+      <button class="skip-btn" bindtap="skipFish" disabled="{{voting}}">
+        跳过这条鱼
+      </button>
+    </view>
+
+    <!-- 进度指示器 -->
+    <view class="progress-indicator">
+      <text>已投票: {{votedCount}} 条</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-card" wx:if="{{loading && !currentFish}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-card" wx:if="{{!loading && !currentFish && fishQueue.length === 0}}">
+    <text class="empty-icon">🐠</text>
+    <text class="empty-text">暂时没有更多鱼可以投票了</text>
+    <button class="btn-primary" bindtap="reloadFish">重新加载</button>
+  </view>
+
+  <!-- 排行榜按钮 -->
+  <view class="leaderboard-section">
+    <button class="leaderboard-btn" bindtap="showLeaderboard">
+      查看排行榜 🏆
+    </button>
+  </view>
+
+  <!-- 排行榜弹窗 -->
+  <view class="modal-mask" wx:if="{{showLeaderboardModal}}" bindtap="closeLeaderboard">
+    <view class="leaderboard-dialog" catchtap="stopPropagation">
+      <view class="leaderboard-header">
+        <text class="leaderboard-title">排行榜</text>
+        <view class="close-btn" bindtap="closeLeaderboard">✕</view>
+      </view>
+      
+      <scroll-view class="leaderboard-list" scroll-y="true">
+        <view 
+          class="rank-item"
+          wx:for="{{leaderboard}}"
+          wx:key="id"
+        >
+          <view class="rank-number rank-{{index + 1}}">
+            <text wx:if="{{index < 3}}">{{['🥇', '🥈', '🥉'][index]}}</text>
+            <text wx:else>{{index + 1}}</text>
+          </view>
+          <image class="rank-fish-image" src="{{item.imageUrl}}" mode="aspectFit" />
+          <view class="rank-info">
+            <text class="rank-artist">{{item.artist}}</text>
+            <text class="rank-votes">❤️ {{item.votes}}</text>
+          </view>
+        </view>
+
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{loadingLeaderboard}}">
+          <text>加载中...</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

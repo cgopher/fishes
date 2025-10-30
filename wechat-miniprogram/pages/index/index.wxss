@@ -1,14 +1,15 @@
 /* pages/index/index.wxss */
-.container {
+.draw-container {
   padding: 20rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
 }
 
+/* 欢迎消息 */
 .welcome-message {
-  background-color: #ffffcc;
+  background: #ffffcc;
   border: 2rpx solid #cccc99;
-  border-radius: 8rpx;
+  border-radius: 10rpx;
   padding: 20rpx;
   margin-bottom: 20rpx;
   text-align: center;
@@ -16,16 +17,18 @@
   color: #666;
 }
 
-.title-section {
+/* 标题 */
+.header {
   text-align: center;
-  margin: 30rpx 0;
+  margin-bottom: 30rpx;
 }
 
 .main-title {
   display: block;
-  font-size: 56rpx;
+  font-size: 48rpx;
   font-weight: bold;
   color: white;
+  margin-bottom: 10rpx;
   text-shadow: 2rpx 2rpx 4rpx rgba(0, 0, 0, 0.3);
 }
 
@@ -33,12 +36,11 @@
   display: block;
   font-size: 28rpx;
   color: rgba(255, 255, 255, 0.9);
-  margin-top: 10rpx;
 }
 
 /* 绘画工具栏 */
 .paint-toolbar {
-  background-color: white;
+  background: white;
   border-radius: 16rpx;
   padding: 20rpx;
   margin-bottom: 20rpx;
@@ -48,14 +50,15 @@
 .color-picker {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 16rpx;
+  align-items: center;
+  gap: 15rpx;
   margin-bottom: 20rpx;
+  flex-wrap: wrap;
 }
 
 .color-btn {
-  width: 60rpx;
-  height: 60rpx;
+  width: 50rpx;
+  height: 50rpx;
   border-radius: 50%;
   border: 3rpx solid transparent;
   transition: all 0.3s;
@@ -64,58 +67,70 @@
 .color-btn.active {
   border-color: #4A90E2;
   transform: scale(1.2);
-  box-shadow: 0 0 10rpx rgba(74, 144, 226, 0.5);
+  box-shadow: 0 4rpx 8rpx rgba(74, 144, 226, 0.4);
 }
 
 .tool-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 16rpx;
+  justify-content: center;
+  gap: 15rpx;
   margin-bottom: 20rpx;
+  flex-wrap: wrap;
 }
 
 .tool-btn {
-  flex: 1;
-  padding: 16rpx 0;
-  background-color: #F0F0F0;
-  border-radius: 8rpx;
+  padding: 15rpx 30rpx;
   font-size: 24rpx;
-  color: #333;
+  background: #F0F0F0;
   border: none;
+  border-radius: 8rpx;
+  color: #333;
 }
 
 .tool-btn::after {
   border: none;
 }
 
-.size-slider {
+.brush-size {
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  gap: 15rpx;
 }
 
 .size-label {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #666;
   white-space: nowrap;
 }
 
-/* 画布容器 */
-.canvas-container {
-  background-color: white;
+.size-slider {
+  flex: 1;
+}
+
+.size-value {
+  font-size: 26rpx;
+  color: #4A90E2;
+  font-weight: bold;
+  min-width: 50rpx;
+  text-align: center;
+}
+
+/* 画布区域 */
+.canvas-wrapper {
+  background: white;
   border-radius: 16rpx;
   padding: 20rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s;
+  margin-bottom: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  transition: background 0.3s;
 }
 
-.canvas-container.fish-valid {
-  background-color: #eaffea;
+.canvas-wrapper.valid-fish {
+  background: #eaffea;
 }
 
-.canvas-container.fish-invalid {
-  background-color: #ffeaea;
+.canvas-wrapper.invalid-fish {
+  background: #ffeaea;
 }
 
 .draw-canvas {
@@ -123,7 +138,7 @@
   height: 400rpx;
   border: 2rpx solid #E0E0E0;
   border-radius: 8rpx;
-  background-color: white;
+  background: white;
 }
 
 .fish-probability {
@@ -137,40 +152,106 @@
 .action-buttons {
   display: flex;
   justify-content: center;
-  margin: 30rpx 0;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
 }
 
-.swim-btn {
-  width: 80%;
-  padding: 30rpx 0;
-  font-size: 32rpx;
+.action-btn {
+  flex: 1;
+  max-width: 300rpx;
+  padding: 25rpx;
+  font-size: 30rpx;
+  border-radius: 12rpx;
   font-weight: bold;
-  border-radius: 50rpx;
-  box-shadow: 0 6rpx 20rpx rgba(74, 144, 226, 0.4);
 }
 
-/* 加载遮罩 */
-.loading-overlay {
+.action-btn::after {
+  border: none;
+}
+
+/* 模态框 */
+.modal-mask {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
 }
 
-.loading-content {
-  background-color: white;
-  padding: 40rpx 60rpx;
+.modal-dialog {
+  width: 80%;
+  max-width: 600rpx;
+  background: white;
   border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 30rpx;
+  text-align: center;
+  border-bottom: 2rpx solid #F0F0F0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.modal-message {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 30rpx;
   text-align: center;
 }
 
-.loading-content text {
+.input-group {
+  margin-top: 20rpx;
+}
+
+.input-label {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+.artist-input {
+  width: 100%;
+  padding: 20rpx;
+  border: 2rpx solid #E0E0E0;
+  border-radius: 8rpx;
   font-size: 28rpx;
-  color: #333;
+  box-sizing: border-box;
+}
+
+.modal-footer {
+  display: flex;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 30rpx;
+  font-size: 30rpx;
+  border-radius: 0;
+  border: none;
+}
+
+.modal-btn::after {
+  border: none;
+}
+
+.modal-btn:first-child {
+  border-right: 2rpx solid #F0F0F0;
 }

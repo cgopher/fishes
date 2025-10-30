@@ -1,0 +1,132 @@
+<!--pages/profile/profile.wxml-->
+<view class="container profile-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-header">
+      <image 
+        class="avatar" 
+        src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" 
+        mode="aspectFill"
+      />
+      <view class="user-info">
+        <text class="username">{{userInfo.displayName || artistName}}</text>
+        <text class="user-id" wx:if="{{userId}}">ID: {{userId}}</text>
+      </view>
+    </view>
+
+    <!-- 未登录状态 -->
+    <view class="login-prompt" wx:if="{{!hasLogin}}">
+      <text class="prompt-text">登录后可以创建自定义鱼缸和管理你的作品</text>
+      <button class="btn-primary" bindtap="login">微信登录</button>
+    </view>
+
+    <!-- 已登录状态 - 用户统计 -->
+    <view class="user-stats" wx:if="{{hasLogin}}">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.fishCount || 0}}</text>
+        <text class="stat-label">我的鱼</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalVotes || 0}}</text>
+        <text class="stat-label">总获赞</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.tankCount || 0}}</text>
+        <text class="stat-label">鱼缸数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-list">
+    <view class="menu-item" bindtap="viewMyFish">
+      <view class="menu-left">
+        <text class="menu-icon">🐠</text>
+        <text class="menu-title">我的鱼</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="goToMyTanks">
+      <view class="menu-left">
+        <text class="menu-icon">🏺</text>
+        <text class="menu-title">我的鱼缸</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="editProfile">
+      <view class="menu-left">
+        <text class="menu-icon">✏️</text>
+        <text class="menu-title">编辑资料</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="showSettings">
+      <view class="menu-left">
+        <text class="menu-icon">⚙️</text>
+        <text class="menu-title">设置</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 我的鱼列表 -->
+  <view class="my-fish-section" wx:if="{{showMyFish && myFishList.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">我的鱼作品</text>
+    </view>
+    <view class="fish-grid">
+      <view 
+        class="fish-item"
+        wx:for="{{myFishList}}"
+        wx:key="id"
+        data-fish="{{item}}"
+        bindtap="viewFishDetail"
+      >
+        <image class="fish-image" src="{{item.imageUrl}}" mode="aspectFit" />
+        <view class="fish-info">
+          <text class="fish-time">{{item.createTime}}</text>
+          <text class="fish-votes">❤️ {{item.votes || 0}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section" wx:if="{{hasLogin}}">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+
+  <!-- 关于 -->
+  <view class="about-section">
+    <text class="about-text">画条鱼 v1.0.0</text>
+    <text class="about-text">Draw a Fish - WeChat Mini Program</text>
+  </view>
+
+  <!-- 编辑资料弹窗 -->
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+    <view class="edit-dialog" catchtap="stopPropagation">
+      <view class="edit-header">
+        <text class="edit-title">编辑资料</text>
+      </view>
+      <view class="edit-body">
+        <view class="input-group">
+          <text class="input-label">显示名称:</text>
+          <input 
+            class="edit-input" 
+            value="{{editArtistName}}" 
+            placeholder="请输入你的名字"
+            bindinput="inputEditName"
+            maxlength="20"
+          />
+        </view>
+      </view>
+      <view class="edit-footer">
+        <button class="edit-btn btn-secondary" bindtap="closeEditModal">取消</button>
+        <button class="edit-btn btn-primary" bindtap="saveProfile">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

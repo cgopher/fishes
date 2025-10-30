@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "画条鱼",
-  "usingComponents": {}
+  "enablePullDownRefresh": false,
+  "disableScroll": true
 }
