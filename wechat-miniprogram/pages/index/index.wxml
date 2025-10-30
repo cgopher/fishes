@@ -1,0 +1,84 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 欢迎消息 -->
+  <view class="welcome-message" wx:if="{{showWelcome}}">
+    <text>{{welcomeText}}</text>
+  </view>
+
+  <!-- 标题 -->
+  <view class="title-section">
+    <text class="main-title">画条鱼！</text>
+    <text class="sub-title">（请让鱼头朝右）</text>
+  </view>
+
+  <!-- 绘画工具栏 -->
+  <view class="paint-toolbar">
+    <!-- 颜色选择 -->
+    <view class="color-picker">
+      <view 
+        wx:for="{{colors}}" 
+        wx:key="*this"
+        class="color-btn {{currentColor === item ? 'active' : ''}}"
+        style="background-color: {{item}}"
+        bindtap="selectColor"
+        data-color="{{item}}"
+      ></view>
+    </view>
+
+    <!-- 工具按钮 -->
+    <view class="tool-buttons">
+      <button class="tool-btn" bindtap="toggleEraser">
+        {{isEraser ? '画笔' : '橡皮擦'}}
+      </button>
+      <button class="tool-btn" bindtap="clearCanvas">清空</button>
+      <button class="tool-btn" bindtap="undoCanvas">撤销</button>
+      <button class="tool-btn" bindtap="flipCanvas">翻转</button>
+    </view>
+
+    <!-- 画笔大小 -->
+    <view class="size-slider">
+      <text class="size-label">大小:</text>
+      <slider 
+        min="1" 
+        max="20" 
+        value="{{lineWidth}}" 
+        bindchange="onLineWidthChange"
+        activeColor="#4A90E2"
+        block-size="16"
+      />
+    </view>
+  </view>
+
+  <!-- 画布区域 -->
+  <view class="canvas-container {{isFish ? 'fish-valid' : 'fish-invalid'}}">
+    <canvas 
+      canvas-id="drawCanvas" 
+      class="draw-canvas"
+      bindtouchstart="onTouchStart"
+      bindtouchmove="onTouchMove"
+      bindtouchend="onTouchEnd"
+      disable-scroll="true"
+    ></canvas>
+    
+    <!-- 鱼概率显示 -->
+    <view class="fish-probability" wx:if="{{fishProbability !== null}}">
+      <text style="color: {{isFish ? '#27ae60' : '#c0392b'}}">
+        鱼的概率: {{fishProbability}}%
+      </text>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-primary swim-btn" bindtap="submitFish">
+      让它游起来！
+    </button>
+  </view>
+
+  <!-- 加载提示 -->
+  <view class="loading-overlay" wx:if="{{isSubmitting}}">
+    <view class="loading-content">
+      <text>正在上传...</text>
+    </view>
+  </view>
+</view>
