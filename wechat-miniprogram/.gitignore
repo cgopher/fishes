@@ -1,0 +1,21 @@
+# 微信开发者工具生成的文件
+.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 小程序
+project.private.config.json
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.log
+.cache/

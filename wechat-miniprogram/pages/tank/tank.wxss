@@ -1,0 +1,246 @@
+/* pages/tank/tank.wxss */
+.tank-container {
+  padding: 0;
+  background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+  min-height: 100vh;
+}
+
+/* 标题 */
+.header {
+  padding: 30rpx;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2rpx 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 过滤栏 */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  padding: 20rpx;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10rpx);
+}
+
+.filter-btn {
+  padding: 15rpx 40rpx;
+  border-radius: 50rpx;
+  font-size: 26rpx;
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s;
+}
+
+.filter-btn.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #4A90E2;
+  font-weight: bold;
+}
+
+/* 鱼缸画布 */
+.tank-wrapper {
+  position: relative;
+  width: 100%;
+  height: 500rpx;
+  margin: 20rpx 0;
+  overflow: hidden;
+}
+
+.tank-canvas {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, 
+    rgba(30, 144, 255, 0.3) 0%,
+    rgba(30, 144, 255, 0.5) 50%,
+    rgba(0, 119, 182, 0.7) 100%
+  );
+}
+
+/* 水波纹效果 */
+.water-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(to bottom, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      transparent 20%,
+      transparent 80%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  pointer-events: none;
+  animation: wave 3s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10rpx);
+  }
+}
+
+/* 鱼列表 */
+.fish-list {
+  height: calc(100vh - 700rpx);
+  padding: 20rpx;
+  background: white;
+  border-radius: 40rpx 40rpx 0 0;
+}
+
+.fish-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  justify-content: space-between;
+}
+
+.fish-item {
+  width: calc(50% - 10rpx);
+  background: white;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.fish-item:active {
+  transform: scale(0.95);
+}
+
+.fish-image {
+  width: 100%;
+  height: 200rpx;
+  background: #F5F5F5;
+}
+
+.fish-info {
+  padding: 15rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fish-artist {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: bold;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fish-votes {
+  font-size: 22rpx;
+  color: #E74C3C;
+  margin-left: 10rpx;
+}
+
+/* 加载状态 */
+.load-more,
+.no-more {
+  text-align: center;
+  padding: 30rpx;
+  color: #999;
+  font-size: 26rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+  font-size: 28rpx;
+  line-height: 1.8;
+}
+
+/* 详情弹窗 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.detail-dialog {
+  width: 85%;
+  max-width: 650rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.detail-header {
+  padding: 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.detail-fish-image {
+  width: 100%;
+  height: 400rpx;
+  background: white;
+  border-radius: 12rpx;
+}
+
+.detail-body {
+  padding: 30rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #F0F0F0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.detail-footer {
+  display: flex;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.detail-btn {
+  flex: 1;
+  padding: 30rpx;
+  font-size: 30rpx;
+  border-radius: 0;
+  border: none;
+}
+
+.detail-btn::after {
+  border: none;
+}
+
+.detail-btn:first-child {
+  border-right: 2rpx solid #F0F0F0;
+}

@@ -1,0 +1,177 @@
+<!--pages/fishtanks/fishtanks.wxml-->
+<view class="container fishtanks-container">
+  <!-- 标题 -->
+  <view class="header">
+    <text class="page-title">我的鱼缸</text>
+    <text class="page-subtitle">创建和管理你的专属鱼缸</text>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-prompt" wx:if="{{!hasLogin}}">
+    <text class="prompt-icon">🔒</text>
+    <text class="prompt-text">登录后可以创建自己的鱼缸</text>
+    <button class="btn-primary" bindtap="goToLogin">去登录</button>
+  </view>
+
+  <!-- 创建鱼缸按钮 -->
+  <view class="create-section" wx:if="{{hasLogin}}">
+    <button class="create-btn" bindtap="showCreateModal">
+      <text class="create-icon">+</text>
+      <text class="create-text">创建新鱼缸</text>
+    </button>
+  </view>
+
+  <!-- 鱼缸列表 -->
+  <view class="tanks-list" wx:if="{{hasLogin}}">
+    <view 
+      class="tank-card"
+      wx:for="{{tanksList}}"
+      wx:key="id"
+      data-tank="{{item}}"
+      bindtap="viewTankDetail"
+    >
+      <view class="tank-preview">
+        <!-- 显示前几条鱼的预览 -->
+        <view class="fish-preview-grid">
+          <image 
+            class="preview-fish" 
+            wx:for="{{item.fishPreview}}"
+            wx:for-item="fish"
+            wx:key="*this"
+            src="{{fish}}" 
+            mode="aspectFit"
+          />
+          <view class="preview-empty" wx:if="{{item.fishCount === 0}}">
+            <text class="empty-text">空鱼缸</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="tank-info">
+        <view class="tank-header">
+          <text class="tank-name">{{item.name}}</text>
+          <view class="tank-badge {{item.isPublic ? 'public' : 'private'}}">
+            {{item.isPublic ? '公开' : '私密'}}
+          </view>
+        </view>
+        <text class="tank-description">{{item.description || '暂无描述'}}</text>
+        <view class="tank-meta">
+          <text class="meta-item">🐠 {{item.fishCount}} 条鱼</text>
+          <text class="meta-item" wx:if="{{item.isPublic}}">👀 {{item.views || 0}} 次浏览</text>
+        </view>
+      </view>
+      
+      <view class="tank-actions" catchtap="stopPropagation">
+        <button class="action-icon-btn" data-tank-id="{{item.id}}" bindtap="editTank">✏️</button>
+        <button class="action-icon-btn" data-tank-id="{{item.id}}" bindtap="shareTank">📤</button>
+        <button class="action-icon-btn delete" data-tank-id="{{item.id}}" bindtap="deleteTank">🗑️</button>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{tanksList.length === 0 && !loading}}">
+      <text class="empty-icon">🏺</text>
+      <text class="empty-text">还没有创建鱼缸\n点击上方按钮创建第一个吧！</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+
+  <!-- 创建鱼缸弹窗 -->
+  <view class="modal-mask" wx:if="{{showCreateModal}}" bindtap="closeCreateModal">
+    <view class="create-dialog" catchtap="stopPropagation">
+      <view class="dialog-header">
+        <text class="dialog-title">{{editMode ? '编辑鱼缸' : '创建新鱼缸'}}</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="form-group">
+          <text class="form-label">鱼缸名称 *</text>
+          <input 
+            class="form-input" 
+            value="{{tankName}}" 
+            placeholder="给你的鱼缸起个名字"
+            bindinput="inputTankName"
+            maxlength="30"
+          />
+        </view>
+        
+        <view class="form-group">
+          <text class="form-label">鱼缸描述</text>
+          <textarea 
+            class="form-textarea" 
+            value="{{tankDescription}}" 
+            placeholder="描述一下这个鱼缸的主题"
+            bindinput="inputTankDescription"
+            maxlength="200"
+          />
+        </view>
+        
+        <view class="form-group">
+          <view class="form-row">
+            <text class="form-label">公开鱼缸</text>
+            <switch 
+              checked="{{tankIsPublic}}" 
+              bindchange="togglePublic"
+              color="#4A90E2"
+            />
+          </view>
+          <text class="form-hint">公开后其他人可以浏览你的鱼缸</text>
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <button class="dialog-btn btn-secondary" bindtap="closeCreateModal">取消</button>
+        <button class="dialog-btn btn-primary" bindtap="confirmCreateTank" disabled="{{creating}}">
+          {{creating ? '创建中...' : (editMode ? '保存' : '创建')}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 鱼缸详情弹窗 -->
+  <view class="modal-mask" wx:if="{{showDetailModal}}" bindtap="closeDetailModal">
+    <view class="detail-dialog" catchtap="stopPropagation">
+      <view class="detail-header">
+        <text class="detail-title">{{selectedTank.name}}</text>
+        <view class="close-btn" bindtap="closeDetailModal">✕</view>
+      </view>
+      
+      <scroll-view class="detail-content" scroll-y="true">
+        <view class="detail-description">
+          <text>{{selectedTank.description || '暂无描述'}}</text>
+        </view>
+        
+        <view class="detail-fish-list">
+          <view class="fish-grid">
+            <view 
+              class="fish-item"
+              wx:for="{{selectedTank.fishList}}"
+              wx:key="id"
+            >
+              <image class="fish-image" src="{{item.imageUrl}}" mode="aspectFit" />
+              <view class="fish-info">
+                <text class="fish-artist">{{item.artist}}</text>
+                <button 
+                  class="remove-fish-btn" 
+                  data-fish-id="{{item.id}}"
+                  bindtap="removeFishFromTank"
+                >
+                  移除
+                </button>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 空状态 -->
+          <view class="empty-fish" wx:if="{{selectedTank.fishList.length === 0}}">
+            <text>这个鱼缸还没有鱼\n去鱼缸页面添加喜欢的鱼吧！</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>
